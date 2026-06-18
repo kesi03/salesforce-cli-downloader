@@ -25,7 +25,13 @@ describe('list command', () => {
 
     expect(built).toHaveProperty('all');
     expect(built).toHaveProperty('online');
+    expect(built).toHaveProperty('source');
+    expect(built).toHaveProperty('tag');
     expect(built.all.default).toBe(false);
     expect(built.online.default).toBe(false);
+    expect(built.source.default).toBe('both');
+    expect(built.source.choices).toEqual(['npm', 'marketplace', 'both']);
+    expect(built.tag.default).toEqual([]);
+    expect(built.tag.choices).toEqual(['core', 'jit', 'community', 'unknown']);
   });
 });

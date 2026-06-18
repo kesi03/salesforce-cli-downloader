@@ -35,6 +35,7 @@ jobs:
 
       - name: Smoke test - download, pack, unpack, verify CLI
         run: |
+          pnpm exec tsx src/index.ts list --online
           pnpm exec tsx src/index.ts download @salesforce/plugin-org @salesforce/plugin-data @salesforce/plugin-auth
           pnpm exec tsx src/index.ts pack -o smoke-test.tar
           pnpm exec tsx src/index.ts unpack -i smoke-test.tar -o ./smoke-out

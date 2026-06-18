@@ -33,17 +33,45 @@ detects this file and downloads everything specified in it.
 Show known Salesforce CLI plugins grouped by category.
 
 ```bash
-# Show core + JIT plugins
+# Show core + JIT plugins (static list)
 tsx src/index.ts list
 
 # Include community plugins (sfdx-git-delta, sfdmu, etc.)
 tsx src/index.ts list --all
 
-# Fetch live data from npm registry (shows real-time versions)
+# Fetch live data from npm registry + plugin marketplace (shows real-time versions)
 tsx src/index.ts list --online
 ```
 
-The `--online` flag queries `registry.npmjs.org` for all `@salesforce/plugin-*` packages and tags each as `[core]`, `[jit]`, or `[unknown]` so you can discover new plugins.
+The `--online` flag queries two sources:
+
+- **npm registry** — searches for all `@salesforce/plugin-*` packages and tags each as `[core]`, `[jit]`, or `[unknown]`
+- **Salesforce plugin marketplace** — fetches the curated community plugin list from `salesforcecli/plugin-marketplace` and resolves versions from npm
+
+#### Filtering
+
+When used with `--online`, results can be filtered by source and tag:
+
+```bash
+# Only show official Salesforce plugins from npm
+tsx src/index.ts list --online --source npm
+
+# Only show community plugins from the plugin marketplace
+tsx src/index.ts list --online --source marketplace
+
+# Only show core plugins
+tsx src/index.ts list --online --tag core
+
+# Only show JIT and community plugins
+tsx src/index.ts list --online --tag jit --tag community
+
+# Combine source and tag filters
+tsx src/index.ts list --online --source npm --tag unknown
+```
+
+Available `--source` values: `npm`, `marketplace`, `both` (default)
+
+Available `--tag` values: `core`, `jit`, `community`, `unknown` (can be specified multiple times)
 
 ---
 
@@ -146,7 +174,7 @@ The archive preserves the `cli/` and `plugins/` directory structure from the wor
 
 ### `unpack`
 
-Extract a tar bundle and optionally install the CLI globally.
+Extract a tar bundle and optionally install the CLI.
 
 ```bash
 # Extract to a directory (named after the archive)
@@ -155,7 +183,7 @@ tsx src/index.ts unpack -i sf-cli-bundle.tar
 # Extract to a specific path
 tsx src/index.ts unpack -i sf-cli-bundle.tar -o /opt/salesforce-cli
 
-# Extract and install the CLI globally
+# Extract and install the CLI
 tsx src/index.ts unpack -i sf-cli-bundle.tar -o ./out --install
 ```
 
@@ -231,4 +259,5 @@ tsx src/index.ts unpack -i sf-offline.tar -o /opt/sf --install
 | JIT (auto-downloaded) | 23 | `src/plugins.ts` — `JIT_PLUGINS` |
 | Community | 4 | `src/plugins.ts` — `COMMUNITY_PLUGINS` |
 | Total known | 41 | |
-| Discoverable via `--online` | ~30+ | Queries `@salesforce/plugin-*` from npm |
+| Discoverable via `--online` | ~30+ | npm registry (`@salesforce/plugin-*`) |
+| Community via `--online --source marketplace` | ~21 | Salesforce plugin-marketplace repo |
