@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Enable Corepack + pin pnpm
         run: |
@@ -35,9 +35,10 @@ jobs:
 
       - name: Smoke test - download, pack, unpack, verify CLI
         run: |
-          pnpm exec tsx src/index.ts download @salesforce/plugin-org
+          pnpm exec tsx src/index.ts download @salesforce/plugin-org @salesforce/plugin-data @salesforce/plugin-auth
           pnpm exec tsx src/index.ts pack -o smoke-test.tar
           pnpm exec tsx src/index.ts unpack -i smoke-test.tar -o ./smoke-out
           ls smoke-out/plugins/
           npm install --prefix ./sf-install ./smoke-out/cli/salesforce-cli-*.tgz
+          ./sf-install/node_modules/.bin/sf --version
           ./sf-install/node_modules/.bin/sf plugins --core
