@@ -36,7 +36,7 @@ export const handler = async (argv: Arguments & {
   const pluginsDir = path.join(workspace, 'plugins');
 
   if (!fs.existsSync(cliDir) && !fs.existsSync(pluginsDir)) {
-    console.error(chalk.red('Nothing to package. Run "salesforce-cli-downloader download" first.'));
+    console.error(chalk.red('Nothing to package. Run "download" first.'));
     process.exit(1);
   }
 

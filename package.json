@@ -1,5 +1,5 @@
 {
-  "name": "salesforce-cli-downloader",
+  "name": "@mockholm/salesforce-cli-downloader",
   "version": "1.0.0",
   "description": "Download Salesforce CLI and plugins, create offline tar bundles",
   "type": "module",

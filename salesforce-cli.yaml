@@ -1,0 +1,46 @@
+# Salesforce CLI version (set to 'latest' or a specific version like '2.70.7')
+cli-version: latest
+
+# Plugins to download
+# Append @version to pin a specific version (e.g. '@salesforce/plugin-org@5.11.10')
+plugins:
+  # Core plugins (bundled with CLI)
+  - "@salesforce/plugin-org"
+  - "@salesforce/plugin-data"
+  - "@salesforce/plugin-apex"
+  - "@salesforce/plugin-deploy-retrieve"
+  - "@salesforce/plugin-functions"
+  - "@salesforce/plugin-packaging"
+  - "@salesforce/plugin-custom-metadata"
+  - "@salesforce/plugin-schema"
+  - "@salesforce/plugin-settings"
+  - "@salesforce/plugin-telemetry"
+  - "@salesforce/plugin-trust"
+  - "@salesforce/plugin-auth"
+  - "@salesforce/plugin-alias"
+  - "@salesforce/plugin-config"
+
+  # JIT plugins (auto-downloaded on first use; included for offline availability)
+  - "@salesforce/plugin-dev"
+  - "@salesforce/plugin-templates"
+  - "@salesforce/plugin-release-management"
+  - "@salesforce/plugin-code-analyzer"
+  - "@salesforce/plugin-lightning"
+  - "@salesforce/plugin-limits"
+  - "@salesforce/plugin-community"
+  - "@salesforce/plugin-user"
+  - "@salesforce/plugin-source"
+  - "@salesforce/plugin-env"
+  - "@salesforce/plugin-sobject"
+  - "@salesforce/plugin-signups"
+  - "@salesforce/plugin-agent"
+  - "@salesforce/plugin-explorer"
+  - "@salesforce/plugin-info"
+  - "@salesforce/plugin-notifications"
+  - "@salesforce/plugin-flow"
+  - "@salesforce/plugin-login"
+  - "@salesforce/plugin-marketplace"
+  - "@salesforce/plugin-command-reference"
+  - "@salesforce/plugin-data-seeding"
+  - "@salesforce/plugin-lightning-dev"
+  - "@salesforce/plugin-license-management"

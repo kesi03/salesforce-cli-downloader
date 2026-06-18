@@ -8,20 +8,21 @@ Download the Salesforce CLI (`sf`) and plugins into offline tar bundles. Every p
 
 ```bash
 # Install dependencies
-pnpm install && pnpm run build
+pnpm install
 
-# List all known plugins
-tsx src/index.ts list
+# Download the CLI + all core and JIT plugins (uses salesforce-cli.yaml)
+pnpm run download
 
-# Download the CLI + all core plugins
-tsx src/index.ts download
-
-# Package into a tar archive
-tsx src/index.ts pack -o sf-cli-bundle.tar
+# Package everything into a portable tar archive
+pnpm run pack
 
 # Unpack somewhere else
 tsx src/index.ts unpack -i sf-cli-bundle.tar -o ./offline-sf
 ```
+
+The project ships with a `salesforce-cli.yaml` that includes the CLI (`@salesforce/cli`) and
+all 37 core + JIT plugins. Running `pnpm run download` with no arguments automatically
+detects this file and downloads everything specified in it.
 
 ---
 
@@ -50,14 +51,22 @@ The `--online` flag queries `registry.npmjs.org` for all `@salesforce/plugin-*` 
 
 Download the Salesforce CLI and/or plugins via `npm pack`.
 
+When run with no arguments, `download` auto-detects `salesforce-cli.yaml` (or
+`salesforce-cli.yml`) in the current directory. The included `salesforce-cli.yaml`
+contains all 14 core + 23 JIT plugins, so `pnpm run download` downloads
+everything for a standard offline setup.
+
 ```bash
-# Download CLI + all core plugins (default)
-tsx src/index.ts download
+# Default download (auto-detects salesforce-cli.yaml)
+pnpm run download
+
+# Download from a specific YAML config file
+tsx src/index.ts download --config my-plugins.yaml
 
 # Download a specific CLI version
 tsx src/index.ts download --cli-version 2.70.7
 
-# Download a plugin category
+# Download a plugin category (ignores config file)
 tsx src/index.ts download --category jit
 tsx src/index.ts download --category all
 
@@ -66,9 +75,6 @@ tsx src/index.ts download @salesforce/plugin-org sfdx-git-delta
 
 # Skip downloading the CLI (plugins only)
 tsx src/index.ts download --skip-cli
-
-# Download from a YAML config file (pins exact versions)
-tsx src/index.ts download --config salesforce-cli.yaml
 ```
 
 All tarballs land in `<workspace>/cli/` and `<workspace>/plugins/`. Default workspace is `./sf-cli-workspace` (override with `-w` or `SALESFORCE_CLI_WORKSPACE` env var).
@@ -180,12 +186,30 @@ sf-cli-workspace/
 
 ## End-to-end workflow
 
+### Default (uses included config)
+
+```bash
+# 1. Install deps
+pnpm install
+
+# 2. Download CLI + all core/JIT plugins (auto-detects salesforce-cli.yaml)
+pnpm run download
+
+# 3. Package into a tar archive
+pnpm run pack
+
+# 4. On the target machine, unpack and install
+tsx src/index.ts unpack -i sf-cli-bundle.tar -o /opt/sf --install
+```
+
+### Custom config
+
 ```bash
 # 1. Build the tool
-pnpm install && pnpm run build
+pnpm install
 
-# 2. Configure what to download (interactive)
-tsx src/index.ts configure -o my-config.yaml
+# 2. Generate or configure a custom plugin list
+tsx src/index.ts generate-config --category all --resolve -o my-config.yaml
 
 # 3. Download everything with pinned versions
 tsx src/index.ts download --config my-config.yaml

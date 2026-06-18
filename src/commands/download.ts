@@ -7,6 +7,30 @@ import { ensureWorkspace, resolveDir } from '../workspace.js';
 import { downloadPackage, getPackageVersion, formatBytes } from '../downloader.js';
 import { loadConfig, parsePluginSpec } from '../config.js';
 
+const CONFIG_FILES = ['salesforce-cli.yaml', 'salesforce-cli.yml'];
+
+function resolveConfigFile(): string | null {
+  for (const f of CONFIG_FILES) {
+    if (fs.existsSync(f)) return path.resolve(f);
+  }
+  return null;
+}
+
+function formatExecError(err: any): string {
+  const stderr = err.stderr?.toString()?.trim();
+  if (stderr) return stderr;
+  return err.message;
+}
+
+function printFailed(failed: string[]): void {
+  if (failed.length > 0) {
+    console.error(chalk.yellow(`\n${failed.length} download(s) failed:`));
+    for (const name of failed) {
+      console.error(chalk.red(`  ${name}`));
+    }
+  }
+}
+
 export const command = 'download [plugins..]';
 export const describe = 'Download Salesforce CLI and plugins';
 
@@ -52,9 +76,19 @@ export const handler = async (argv: Arguments & {
 
   const cliDir = resolveDir(workspace, 'cli');
   const pluginDir = resolveDir(workspace, 'plugins');
+  const failed: string[] = [];
 
-  if (argv.config) {
-    const configPath = path.resolve(argv.config);
+  let configArg = argv.config;
+  if (!configArg && (!argv.plugins || argv.plugins.length === 0)) {
+    const detected = resolveConfigFile();
+    if (detected) {
+      configArg = detected;
+      console.log(chalk.gray(`Detected config: ${detected}`));
+    }
+  }
+
+  if (configArg) {
+    const configPath = path.resolve(configArg);
     if (!fs.existsSync(configPath)) {
       console.error(chalk.red(`Config file not found: ${configPath}`));
       process.exit(1);
@@ -82,12 +116,15 @@ export const handler = async (argv: Arguments & {
           const stats = fs.statSync(tarball);
           console.log(chalk.green(`  Saved: ${path.basename(tarball)} (${formatBytes(stats.size)})`));
         } catch (err: any) {
-          console.error(chalk.red(`  Failed: ${name} - ${err.message}`));
+          console.error(chalk.red(`  Failed: ${name}`));
+          console.error(chalk.gray(`    ${formatExecError(err)}`));
+          failed.push(name);
         }
       }
     }
 
     console.log(chalk.green('\nDownload complete!'));
+    printFailed(failed);
     return;
   }
 
@@ -118,10 +155,13 @@ export const handler = async (argv: Arguments & {
         const stats = fs.statSync(tarball);
         console.log(chalk.green(`  Saved: ${path.basename(tarball)} (${formatBytes(stats.size)})`));
       } catch (err: any) {
-        console.error(chalk.red(`  Failed: ${plugin} - ${err.message}`));
+        console.error(chalk.red(`  Failed: ${plugin}`));
+        console.error(chalk.gray(`    ${formatExecError(err)}`));
+        failed.push(plugin);
       }
     }
   }
 
   console.log(chalk.green('\nDownload complete!'));
+  printFailed(failed);
 };
