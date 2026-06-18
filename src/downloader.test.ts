@@ -6,6 +6,7 @@ import * as path from 'node:path';
 vi.mock('node:child_process');
 vi.mock('node:fs');
 
+const destDir = path.join(process.cwd(), 'tmp-dest');
 const { downloadPackage, getPackageVersion, formatBytes } = await import('./downloader.js');
 
 beforeEach(() => {
@@ -44,20 +45,20 @@ describe('downloadPackage', () => {
     vi.mocked(execSync).mockReturnValue(mockTarball);
     vi.mocked(fs.existsSync).mockReturnValue(true);
 
-    const result = downloadPackage('@salesforce/plugin-org', '/tmp/dest');
+    const result = downloadPackage('@salesforce/plugin-org', destDir);
 
     expect(execSync).toHaveBeenCalledWith('npm pack @salesforce/plugin-org', expect.objectContaining({
-      cwd: '/tmp/dest',
+      cwd: destDir,
       encoding: 'utf-8',
     }));
-    expect(result).toBe(path.join('/tmp/dest', mockTarball));
+    expect(result).toBe(path.join(destDir, mockTarball));
   });
 
   it('throws when tarball is not found', () => {
     vi.mocked(execSync).mockReturnValue('pkg.tgz');
     vi.mocked(fs.existsSync).mockReturnValue(false);
 
-    expect(() => downloadPackage('some-pkg', '/tmp/dest')).toThrow(
+    expect(() => downloadPackage('some-pkg', destDir)).toThrow(
       'Expected tarball not found',
     );
   });
