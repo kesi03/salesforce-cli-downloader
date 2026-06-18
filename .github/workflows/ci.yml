@@ -1,5 +1,6 @@
 name: CI
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -34,7 +35,7 @@ jobs:
 
       - name: Smoke test - download, pack, unpack
         run: |
-          pnpm run download -- --skip-cli @salesforce/plugin-org
-          pnpm run pack -- -o smoke-test.tar
-          pnpm run start -- unpack -i smoke-test.tar -o ./smoke-out
+          tsx src/index.ts download --skip-cli @salesforce/plugin-org
+          tsx src/index.ts pack -o smoke-test.tar
+          tsx src/index.ts unpack -i smoke-test.tar -o ./smoke-out
           ls smoke-out/plugins/
