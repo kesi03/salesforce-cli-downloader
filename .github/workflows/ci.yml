@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack + pin pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript build
+        run: pnpm run build
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Smoke test - download, pack, unpack
+        run: |
+          pnpm run download -- --skip-cli @salesforce/plugin-org
+          pnpm run pack -- -o smoke-test.tar
+          pnpm run start -- unpack -i smoke-test.tar -o ./smoke-out
+          ls smoke-out/plugins/
