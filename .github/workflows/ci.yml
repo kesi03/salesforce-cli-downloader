@@ -35,7 +35,7 @@ jobs:
 
       - name: Smoke test - download, pack, unpack
         run: |
-          tsx src/index.ts download --skip-cli @salesforce/plugin-org
-          tsx src/index.ts pack -o smoke-test.tar
-          tsx src/index.ts unpack -i smoke-test.tar -o ./smoke-out
+          pnpm exec tsx src/index.ts download --skip-cli @salesforce/plugin-org
+          pnpm exec tsx src/index.ts pack -o smoke-test.tar
+          pnpm exec tsx src/index.ts unpack -i smoke-test.tar -o ./smoke-out
           ls smoke-out/plugins/
