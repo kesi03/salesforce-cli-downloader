@@ -36,6 +36,6 @@ export const handler = async (argv: Arguments & {
   }
 
   console.log(chalk.blue('Installing from offline cache...'));
-  execSync(`pnpm install --offline --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
+  execSync(`pnpm install --offline --ignore-scripts --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
   console.log(chalk.green('Install complete.'));
 };
