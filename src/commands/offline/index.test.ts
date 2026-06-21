@@ -2,16 +2,16 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { command, describe: desc, builder } = await import('./index');
 
-describe('pnpm parent command', () => {
+describe('offline parent command', () => {
   it('has correct command name', () => {
-    expect(command).toBe('pnpm');
+    expect(command).toBe('offline');
   });
 
   it('has a description', () => {
     expect(desc).toBeTruthy();
   });
 
-  it('builder registers build, unpack, use subcommands', () => {
+  it('builder registers pack, unpack, setup, configure subcommands', () => {
     const commands: string[] = [];
     const mockYargs = {
       command(cmd: any) {
@@ -27,6 +27,7 @@ describe('pnpm parent command', () => {
 
     expect(commands).toContain('pack');
     expect(commands).toContain('unpack');
-    expect(commands).toContain('use');
+    expect(commands).toContain('setup');
+    expect(commands).toContain('configure');
   });
 });

@@ -4,8 +4,8 @@ import { execSync } from 'node:child_process';
 import chalk from 'chalk';
 import type { Arguments, CommandBuilder } from 'yargs';
 
-export const command = 'use';
-export const describe = 'Install dependencies from the offline cache (no network)';
+export const command = 'setup';
+export const describe = 'Setup project from the offline cache (no network)';
 
 export const builder: CommandBuilder = (yargs) =>
   yargs

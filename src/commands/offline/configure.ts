@@ -2,12 +2,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import chalk from 'chalk';
 import type { Arguments, CommandBuilder } from 'yargs';
-import { CORE_PLUGINS, JIT_PLUGINS, ALL_PLUGINS, CLI_PACKAGE } from '../plugins';
-import { getPackageVersion } from '../downloader';
-import { loadConfig, parsePluginSpec } from '../config';
+import { CORE_PLUGINS, JIT_PLUGINS, ALL_PLUGINS, CLI_PACKAGE } from '../../plugins';
+import { getPackageVersion } from '../../downloader';
+import { loadConfig, parsePluginSpec } from '../../config';
 
-export const command = 'gen-pkg';
-export const describe = 'Generate a package.json for pnpm offline cache';
+export const command = 'configure';
+export const describe = 'Generate package.json for offline cache';
 
 export const builder: CommandBuilder = (yargs) =>
   yargs

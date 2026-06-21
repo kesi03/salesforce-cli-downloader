@@ -88,23 +88,34 @@ tasks:
       - echo "=== Smoke test passed! ==="
 
   # ──────────────────────────────────────────────
-  # pnpm offline cache workflow
+  # offline cache workflow
   # ──────────────────────────────────────────────
 
-  pnpm-build:
-    desc: "Full pnpm offline cache build via CLI"
+  offline:
+    desc: "Run offline-related tasks (use: task offline:pack)"
     cmds:
-      - pnpm exec tsx src/index.ts pnpm pack -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
+      - echo "Use task offline:pack, task offline:unpack, or task offline:setup"
+
+  offline:pack:
+    desc: "Full offline cache build via CLI"
+    cmds:
+      - pnpm exec tsx src/index.ts offline pack -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
     silent: true
 
-  pnpm-unpack:
+  offline:unpack:
     desc: "Unpack offline cache via CLI"
     cmds:
-      - pnpm exec tsx src/index.ts pnpm unpack -s {{.OFFLINE_CACHE_DIR}}
+      - pnpm exec tsx src/index.ts offline unpack -s {{.OFFLINE_CACHE_DIR}}
     silent: true
 
-  pnpm-use:
-    desc: "Install from offline cache via CLI"
+  offline:setup:
+    desc: "Setup project from offline cache via CLI"
     cmds:
-      - pnpm exec tsx src/index.ts pnpm use -s {{.OFFLINE_CACHE_DIR}}
+      - pnpm exec tsx src/index.ts offline setup -s {{.OFFLINE_CACHE_DIR}}
+    silent: true
+
+  offline:configure:
+    desc: "Generate package.json for offline cache"
+    cmds:
+      - pnpm exec tsx src/index.ts offline configure -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
     silent: true

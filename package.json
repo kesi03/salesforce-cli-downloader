@@ -16,6 +16,10 @@
     "unpack": "tsx src/index.ts unpack",
     "list": "tsx src/index.ts list",
     "setup": "tsx src/index.ts setup",
+    "offline:pack": "tsx src/index.ts offline pack",
+    "offline:unpack": "tsx src/index.ts offline unpack",
+    "offline:setup": "tsx src/index.ts offline setup",
+    "offline:configure": "tsx src/index.ts offline configure",
     "smoke-test": "bash smoke-test.sh"
   },
   "dependencies": {

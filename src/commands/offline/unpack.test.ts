@@ -1,28 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
-import * as childProcess from 'node:child_process';
+import * as tar from 'tar';
 
 vi.mock('node:fs');
-vi.mock('node:child_process');
+vi.mock('tar');
 
-const { command, describe: desc, builder, handler } = await import('./use');
+const { command, describe: desc, builder, handler } = await import('./unpack');
 
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(fs.existsSync).mockReturnValue(true);
-  vi.mocked(childProcess.execSync).mockReturnValue(Buffer.from(''));
+  vi.mocked(fs.mkdirSync).mockReturnValue(undefined as any);
+  vi.mocked(tar.extract).mockResolvedValue(undefined as any);
 });
 
-describe('pnpm use subcommand', () => {
+describe('offline unpack subcommand', () => {
   it('has correct command name', () => {
-    expect(command).toBe('use');
+    expect(command).toBe('unpack');
   });
 
   it('has a description', () => {
     expect(desc).toBeTruthy();
   });
 
-  it('builder defines dir and store-dir options', () => {
+  it('builder defines input and store-dir options', () => {
     const options: Record<string, any> = {};
     const mockYargs = {
       option(key: string, opts: any) {
@@ -33,29 +34,26 @@ describe('pnpm use subcommand', () => {
 
     (builder as Function)(mockYargs);
 
-    expect(options).toHaveProperty('dir');
+    expect(options).toHaveProperty('input');
     expect(options).toHaveProperty('store-dir');
   });
 
-  it('runs pnpm install --offline', async () => {
+  it('extracts tar to store directory', async () => {
     await handler({
-      dir: './pnpm-bundle',
+      input: 'offline-cache.tar',
       storeDir: './offline-cache',
     } as any);
 
-    expect(childProcess.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm install --offline'),
-      expect.anything(),
-    );
+    expect(tar.extract).toHaveBeenCalled();
   });
 
-  it('exits when package.json not found', async () => {
+  it('exits when archive not found', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(false);
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
 
     await handler({
-      dir: './nonexistent',
+      input: 'nonexistent.tar',
       storeDir: './offline-cache',
     } as any);
 

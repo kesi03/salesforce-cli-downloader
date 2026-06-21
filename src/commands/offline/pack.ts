@@ -9,7 +9,7 @@ import { getPackageVersion, formatBytes } from '../../downloader';
 import { loadConfig, parsePluginSpec } from '../../config';
 
 export const command = 'pack';
-export const describe = 'Pack a pnpm offline cache: generate package.json, install, prune, fetch, pack';
+export const describe = 'Pack an offline cache: generate package.json, install, prune, fetch, pack';
 
 export const builder: CommandBuilder = (yargs) =>
   yargs
@@ -155,5 +155,5 @@ export const handler = async (argv: Arguments & {
   );
   const stats = fs.statSync(outputTar);
   console.log(chalk.green(`  Archive: ${outputTar} (${formatBytes(stats.size)})`));
-  console.log(chalk.green('\npnpm offline cache built successfully.'));
+  console.log(chalk.green('\nOffline cache built successfully.'));
 };

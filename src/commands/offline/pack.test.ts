@@ -21,7 +21,7 @@ beforeEach(() => {
   vi.mocked(tar.create).mockResolvedValue(undefined as any);
 });
 
-describe('pnpm pack subcommand', () => {
+describe('offline pack subcommand', () => {
   it('has correct command name', () => {
     expect(command).toBe('pack');
   });
@@ -52,7 +52,7 @@ describe('pnpm pack subcommand', () => {
     expect(options.category.default).toBe('all');
   });
 
-  it('generates package.json and runs pnpm commands', async () => {
+  it('generates package.json and runs pnpm install/prune/fetch', async () => {
     await handler({
       dir: './pnpm-bundle',
       storeDir: './offline-cache',

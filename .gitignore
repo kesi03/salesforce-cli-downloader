@@ -5,3 +5,6 @@ smoke-test.tar
 smoke-out
 sf-install
 smoke-test-tmp
+offline-cache
+offline-cache.tar
+pnpm-bundle

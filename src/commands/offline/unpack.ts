@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import type { Arguments, CommandBuilder } from 'yargs';
 
 export const command = 'unpack';
-export const describe = 'Unpack the pnpm offline cache tarball';
+export const describe = 'Unpack the offline cache tarball';
 
 export const builder: CommandBuilder = (yargs) =>
   yargs

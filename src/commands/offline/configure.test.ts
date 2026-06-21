@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as downloader from '../downloader.js';
+import * as downloader from '../../downloader';
 
 vi.mock('node:fs');
-vi.mock('../downloader.js');
+vi.mock('../../downloader');
 
-const { command, describe: desc, builder, handler } = await import('./gen-pkg.js');
+const { command, describe: desc, builder, handler } = await import('./configure');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -15,9 +15,9 @@ beforeEach(() => {
   vi.mocked(fs.writeFileSync).mockReturnValue();
 });
 
-describe('gen-pkg command', () => {
+describe('offline configure command', () => {
   it('has correct command name', () => {
-    expect(command).toBe('gen-pkg');
+    expect(command).toBe('configure');
   });
 
   it('has a description', () => {

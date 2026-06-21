@@ -27,8 +27,8 @@ describe('CORE_PLUGINS', () => {
 });
 
 describe('JIT_PLUGINS', () => {
-  it('has 26 JIT plugins', () => {
-    expect(JIT_PLUGINS.length).toBe(26);
+  it('has 23 JIT plugins', () => {
+    expect(JIT_PLUGINS.length).toBe(23);
   });
 
   it('includes plugin-dev', () => {
