@@ -1,0 +1,110 @@
+version: "3"
+
+vars:
+  ROOT: "{{.TASKFILE_DIR}}"
+  OFFLINE_CACHE_DIR: '{{.OFFLINE_CACHE_DIR | default "./offline-cache"}}'
+  PNPM_CATEGORY: '{{.PNPM_CATEGORY | default "all"}}'
+
+tasks:
+  default:
+    desc: "Run full smoke test: list, download, pack, unpack, install, verify"
+    cmds:
+      - task: list-online
+      - task: download
+      - task: pack
+      - task: unpack
+      - task: install-cli
+      - task: verify
+
+  clean:
+    desc: "Remove smoke test artifacts"
+    cmds:
+      - rm -rf {{.ROOT}}/smoke-test.tar {{.ROOT}}/smoke-out {{.ROOT}}/sf-install
+    silent: true
+
+  list-online:
+    desc: "List available plugins from npm"
+    cmds:
+      - pnpm exec tsx src/index.ts list --online
+    silent: true
+
+  download:
+    desc: "Download Salesforce CLI + plugins from salesforce-cli.yaml"
+    cmds:
+      - pnpm exec tsx src/index.ts download
+    silent: true
+
+  pack:
+    desc: "Pack downloaded artifacts into a tar archive"
+    cmds:
+      - rm -rf {{.ROOT}}/smoke-test.tar
+      - pnpm exec tsx src/index.ts pack -o {{.ROOT}}/smoke-test.tar
+    silent: true
+
+  unpack:
+    desc: "Unpack tar archive into smoke-out/"
+    cmds:
+      - rm -rf {{.ROOT}}/smoke-out
+      - pnpm exec tsx src/index.ts unpack -i {{.ROOT}}/smoke-test.tar -o {{.ROOT}}/smoke-out
+    silent: true
+
+  install-cli:
+    desc: "Install the CLI and all plugin tarballs via npm"
+    cmds:
+      - pnpm exec tsx src/index.ts setup -d {{.ROOT}}/sf-install -i {{.ROOT}}/smoke-out
+    silent: true
+
+  version:
+    desc: "Check the installed CLI version"
+    cmds:
+      - '{{.ROOT}}/sf-install/node_modules/.bin/sf --version'
+    silent: true
+
+  plugins:
+    desc: "List installed plugins"
+    cmds:
+      - '{{.ROOT}}/sf-install/node_modules/.bin/sf plugins --core'
+    silent: true
+
+  sf:
+    desc: "Check the installed CLI version"
+    cmds:
+      - '{{.ROOT}}/sf-install/node_modules/.bin/sf'
+    silent: true
+
+  verify:
+    desc: "Verify sf version and core plugins"
+    cmds:
+      - echo ""
+      - echo "=== Unpacked plugins ==="
+      - ls {{.ROOT}}/smoke-out/plugins/
+      - echo ""
+      - echo "=== sf version ==="
+      - '{{.ROOT}}/sf-install/node_modules/.bin/sf --version'
+      - echo ""
+      - echo "=== sf core plugins ==="
+      - '{{.ROOT}}/sf-install/node_modules/.bin/sf plugins --core'
+      - echo ""
+      - echo "=== Smoke test passed! ==="
+
+  # ──────────────────────────────────────────────
+  # pnpm offline cache workflow
+  # ──────────────────────────────────────────────
+
+  pnpm-build:
+    desc: "Full pnpm offline cache build via CLI"
+    cmds:
+      - pnpm exec tsx src/index.ts pnpm pack -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
+    silent: true
+
+  pnpm-unpack:
+    desc: "Unpack offline cache via CLI"
+    cmds:
+      - pnpm exec tsx src/index.ts pnpm unpack -s {{.OFFLINE_CACHE_DIR}}
+    silent: true
+
+  pnpm-use:
+    desc: "Install from offline cache via CLI"
+    cmds:
+      - pnpm exec tsx src/index.ts pnpm use -s {{.OFFLINE_CACHE_DIR}}
+    silent: true

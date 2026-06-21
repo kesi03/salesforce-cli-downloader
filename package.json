@@ -14,7 +14,9 @@
     "download": "tsx src/index.ts download",
     "pack": "tsx src/index.ts pack",
     "unpack": "tsx src/index.ts unpack",
-    "list": "tsx src/index.ts list"
+    "list": "tsx src/index.ts list",
+    "setup": "tsx src/index.ts setup",
+    "smoke-test": "bash smoke-test.sh"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.5.2",

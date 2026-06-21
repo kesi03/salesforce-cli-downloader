@@ -8,6 +8,9 @@ import * as pack from './commands/pack.js';
 import * as unpack from './commands/unpack.js';
 import * as generateConfig from './commands/generate-config.js';
 import * as configure from './commands/configure.js';
+import * as setup from './commands/setup.js';
+import * as genPkg from './commands/gen-pkg.js';
+import * as pnpm from './commands/pnpm/index.js';
 
 const argv = yargs(hideBin(process.argv))
   .scriptName('salesforce-cli-downloader')
@@ -25,6 +28,9 @@ const argv = yargs(hideBin(process.argv))
   .command(unpack as any)
   .command(generateConfig as any)
   .command(configure as any)
+  .command(setup as any)
+  .command(genPkg as any)
+  .command(pnpm as any)
   .demandCommand(1, 'Please specify a command')
   .help()
   .alias('help', 'h')

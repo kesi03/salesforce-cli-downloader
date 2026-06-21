@@ -39,6 +39,9 @@ export const JIT_PLUGINS = [
   '@salesforce/plugin-data-seeding',
   '@salesforce/plugin-lightning-dev',
   '@salesforce/plugin-license-management',
+  '@salesforce/plugin-devops-center',
+  '@salesforce/plugin-ui-bundle-dev',
+  '@salesforce/sfdx-plugin-lwc-test',
 ] as const;
 
 export const COMMUNITY_PLUGINS = [

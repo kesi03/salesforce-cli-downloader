@@ -1,3 +1,7 @@
 dist
 node_modules
 sf-cli-workspace
+smoke-test.tar
+smoke-out
+sf-install
+smoke-test-tmp
