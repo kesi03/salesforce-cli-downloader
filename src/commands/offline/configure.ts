@@ -110,8 +110,6 @@ export const handler = async (argv: Arguments & {
   console.log(chalk.green(`Package file created: ${pkgPath}`));
 
   const npmrcPath = path.join(outputDir, '.npmrc');
-  const storeDirRel = argv.storeDir || './offline-cache';
-  const npmrcContent = `store-dir=${storeDirRel}\n`;
-  fs.writeFileSync(npmrcPath, npmrcContent, 'utf-8');
+  fs.writeFileSync(npmrcPath, '', 'utf-8');
   console.log(chalk.green(`npmrc created: ${npmrcPath}`));
 };

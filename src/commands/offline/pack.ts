@@ -123,8 +123,7 @@ export const handler = async (argv: Arguments & {
   console.log(chalk.green(`  Package file: ${pkgPath}`));
 
   const npmrcPath = path.join(bundleDir, '.npmrc');
-  const storeDirRel = argv.storeDir || './offline-cache';
-  fs.writeFileSync(npmrcPath, `store-dir=${storeDirRel}\nignore-scripts=true\n`, 'utf-8');
+  fs.writeFileSync(npmrcPath, 'ignore-scripts=true\n', 'utf-8');
   console.log(chalk.green(`  npmrc: ${npmrcPath}`));
 
   // ── Step 2: pnpm install (no scripts — we only need the store) ──
@@ -132,17 +131,7 @@ export const handler = async (argv: Arguments & {
   execSync(`pnpm install --ignore-scripts --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
   console.log(chalk.green('  Install complete.'));
 
-  // ── Step 3: pnpm store prune ──
-  console.log(chalk.blue('\nPruning store for portability...'));
-  execSync(`pnpm store prune --store-dir "${storeDir}"`, { stdio: 'inherit' });
-  console.log(chalk.green('  Prune complete.'));
-
-  // ── Step 4: pnpm fetch ──
-  console.log(chalk.blue('\nPre-downloading all deps to store...'));
-  execSync(`pnpm fetch --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
-  console.log(chalk.green('  Fetch complete.'));
-
-  // ── Step 5: tar the store ──
+  // ── Step 3: tar the store ──
   console.log(chalk.blue('\nPacking offline cache...'));
   const tarDir = path.dirname(storeDir);
   const storeBase = path.basename(storeDir);

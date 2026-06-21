@@ -52,7 +52,7 @@ describe('offline pack subcommand', () => {
     expect(options.category.default).toBe('all');
   });
 
-  it('generates package.json and runs pnpm install/prune/fetch', async () => {
+  it('generates package.json and runs pnpm install then tars the store', async () => {
     await handler({
       dir: './pnpm-bundle',
       storeDir: './offline-cache',
@@ -62,16 +62,9 @@ describe('offline pack subcommand', () => {
     } as any);
 
     expect(fs.writeFileSync).toHaveBeenCalled();
+    expect(childProcess.execSync).toHaveBeenCalledTimes(1);
     expect(childProcess.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm install'),
-      expect.anything(),
-    );
-    expect(childProcess.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm store prune'),
-      expect.anything(),
-    );
-    expect(childProcess.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('pnpm fetch'),
+      expect.stringContaining('pnpm install --ignore-scripts'),
       expect.anything(),
     );
     expect(tar.create).toHaveBeenCalled();

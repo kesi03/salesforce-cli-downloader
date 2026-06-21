@@ -97,7 +97,7 @@ describe('offline configure command', () => {
     expect(downloader.getPackageVersion).toHaveBeenCalled();
   });
 
-  it('writes .npmrc with store-dir', async () => {
+  it('creates an .npmrc file', async () => {
     await handler({
       dir: './pnpm-bundle',
       category: 'core',
@@ -105,8 +105,11 @@ describe('offline configure command', () => {
       storeDir: '/custom/cache/path',
     } as any);
 
-    const npmrc = vi.mocked(fs.writeFileSync).mock.calls[1][1] as string;
-    expect(npmrc).toContain('store-dir=');
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      expect.stringContaining('.npmrc'),
+      '',
+      'utf-8',
+    );
   });
 
   it('generates JIT plugins when category is jit', async () => {
