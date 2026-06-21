@@ -1,0 +1,87 @@
+name: Offline Cache
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack + pin pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build offline cache
+        run: pnpm exec tsx src/index.ts offline pack -c all -s ./offline-cache -o offline-cache.tar
+
+      - name: Upload offline cache tar
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-cache
+          path: offline-cache.tar
+
+      - name: Upload pnpm bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-bundle
+          path: pnpm-bundle/
+
+  verify:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack + pin pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download offline cache tar
+        uses: actions/download-artifact@v4
+        with:
+          name: offline-cache
+
+      - name: Download pnpm bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: pnpm-bundle
+          path: pnpm-bundle
+
+      - name: Unpack offline cache
+        run: pnpm exec tsx src/index.ts offline unpack -i offline-cache.tar -s ./offline-cache
+
+      - name: Setup from offline cache
+        run: pnpm exec tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
+
+      - name: Verify CLI works
+        run: |
+          ls pnpm-bundle/node_modules/.bin/sf
+          ./pnpm-bundle/node_modules/.bin/sf --version
+          ./pnpm-bundle/node_modules/.bin/sf plugins --core

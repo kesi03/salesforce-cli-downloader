@@ -20,7 +20,6 @@ export const JIT_PLUGINS = [
   '@salesforce/plugin-templates',
   '@salesforce/plugin-release-management',
   '@salesforce/plugin-code-analyzer',
-  '@salesforce/plugin-lightning',
   '@salesforce/plugin-limits',
   '@salesforce/plugin-community',
   '@salesforce/plugin-user',
@@ -29,9 +28,7 @@ export const JIT_PLUGINS = [
   '@salesforce/plugin-sobject',
   '@salesforce/plugin-signups',
   '@salesforce/plugin-agent',
-  '@salesforce/plugin-explorer',
   '@salesforce/plugin-info',
-  '@salesforce/plugin-notifications',
   '@salesforce/plugin-flow',
   '@salesforce/plugin-login',
   '@salesforce/plugin-marketplace',
@@ -39,6 +36,9 @@ export const JIT_PLUGINS = [
   '@salesforce/plugin-data-seeding',
   '@salesforce/plugin-lightning-dev',
   '@salesforce/plugin-license-management',
+  '@salesforce/plugin-devops-center',
+  '@salesforce/plugin-ui-bundle-dev',
+  '@salesforce/sfdx-plugin-lwc-test',
 ] as const;
 
 export const COMMUNITY_PLUGINS = [
