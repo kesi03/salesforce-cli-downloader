@@ -123,12 +123,13 @@ export const handler = async (argv: Arguments & {
   console.log(chalk.green(`  Package file: ${pkgPath}`));
 
   const npmrcPath = path.join(bundleDir, '.npmrc');
-  fs.writeFileSync(npmrcPath, `store-dir=${storeDir}\n`, 'utf-8');
+  const storeDirRel = argv.storeDir || './offline-cache';
+  fs.writeFileSync(npmrcPath, `store-dir=${storeDirRel}\nignore-scripts=true\n`, 'utf-8');
   console.log(chalk.green(`  npmrc: ${npmrcPath}`));
 
-  // ── Step 2: pnpm install ──
+  // ── Step 2: pnpm install (no scripts — we only need the store) ──
   console.log(chalk.blue('\nInstalling packages into store...'));
-  execSync(`pnpm install --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
+  execSync(`pnpm install --ignore-scripts --prefix "${bundleDir}" --store-dir "${storeDir}"`, { stdio: 'inherit' });
   console.log(chalk.green('  Install complete.'));
 
   // ── Step 3: pnpm store prune ──
