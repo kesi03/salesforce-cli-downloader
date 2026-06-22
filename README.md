@@ -189,6 +189,91 @@ tsx src/index.ts unpack -i sf-cli-bundle.tar -o ./out --install
 
 ---
 
+### `offline`
+
+Manage a **pnpm store-based** offline cache. This is an alternative to the
+`download`/`pack`/`unpack` approach: instead of downloading individual tarballs, it
+uses pnpm to populate a store and ships the raw store directory as a tar archive.
+
+#### `offline configure`
+
+Generate `package.json` and `.npmrc` for the offline bundle. The `package.json` lists
+`@salesforce/cli` and plugins as dependencies, ready for `pnpm install`.
+
+```bash
+# Generate with all core + JIT plugins
+tsx src/index.ts offline configure -d ./pnpm-bundle
+
+# Read plugins from a YAML config file
+tsx src/index.ts offline configure -f salesforce-cli.yaml -d ./pnpm-bundle
+
+# Resolve and pin latest versions from npm
+tsx src/index.ts offline configure -c all -d ./pnpm-bundle --resolve
+```
+
+| Option | Alias | Default | Description |
+|---|---|---|---|
+| `--dir` | `-d` | `./pnpm-bundle` | Output directory for `package.json` and `.npmrc` |
+| `--category` | `-c` | `all` | Plugin category: `core`, `jit`, `all` |
+| `--config` | `-f` | — | YAML config file to read plugins from |
+| `--resolve` | `-r` | `false` | Resolve latest versions from npm |
+| `--store-dir` | `-s` | `./offline-cache` | pnpm store directory |
+
+#### `offline pack`
+
+Generate `package.json`, `.npmrc`, run `pnpm install` to populate the store, and
+pack the store directory into a tar archive.
+
+```bash
+# Pack all core + JIT plugins into offline-cache.tar
+tsx src/index.ts offline pack -c all -s ./offline-cache -o offline-cache.tar
+
+# Use a YAML config file
+tsx src/index.ts offline pack -f salesforce-cli.yaml -o offline-cache.tar
+
+# Resolve and pin latest versions
+tsx src/index.ts offline pack -c all --resolve -o offline-cache.tar
+```
+
+| Option | Alias | Default | Description |
+|---|---|---|---|
+| `--dir` | `-d` | `./pnpm-bundle` | Output directory for `package.json` and `.npmrc` |
+| `--store-dir` | `-s` | `./offline-cache` | pnpm store directory |
+| `--category` | `-c` | `all` | Plugin category: `core`, `jit`, `all` |
+| `--config` | `-f` | — | YAML config file to read plugins from |
+| `--resolve` | `-r` | `false` | Resolve latest versions from npm |
+| `--output` | `-o` | `offline-cache.tar` | Output tar archive path |
+
+#### `offline unpack`
+
+Extract the offline cache tar archive to restore the pnpm store.
+
+```bash
+tsx src/index.ts offline unpack -i offline-cache.tar -s ./offline-cache
+```
+
+| Option | Alias | Default | Description |
+|---|---|---|---|
+| `--input` | `-i` | `offline-cache.tar` | Offline cache tar archive path |
+| `--store-dir` | `-s` | `./offline-cache` | Target directory for the pnpm store |
+
+#### `offline setup`
+
+Install packages from the offline pnpm store (no network required). Reads
+`package.json` and `.npmrc` from the bundle directory and runs
+`pnpm install --offline` against the local store.
+
+```bash
+tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
+```
+
+| Option | Alias | Default | Description |
+|---|---|---|---|
+| `--dir` | `-d` | `./pnpm-bundle` | Directory containing `package.json` and `.npmrc` |
+| `--store-dir` | `-s` | `./offline-cache` | pnpm store directory |
+
+---
+
 ## Workspace
 
 The default workspace is `./sf-cli-workspace`. Override with:
@@ -247,6 +332,25 @@ tsx src/index.ts pack -o sf-offline.tar
 
 # 5. On the target machine, unpack
 tsx src/index.ts unpack -i sf-offline.tar -o /opt/sf --install
+```
+
+### Offline cache (pnpm store)
+
+```bash
+# 1. Build the tool
+pnpm install
+
+# 2. Generate package.json and install into pnpm store, then pack the store
+tsx src/index.ts offline pack -c all -s ./offline-cache -o offline-cache.tar
+
+# 3. On the target machine, unpack the store
+tsx src/index.ts offline unpack -i offline-cache.tar -s ./offline-cache
+
+# 4. Install from the offline store (no network)
+tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
+
+# 5. Verify the CLI works
+./pnpm-bundle/node_modules/.bin/sf --version
 ```
 
 ---
