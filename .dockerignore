@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+offline-cache
+offline-cache.tar
+pnpm-bundle
+sf-install
+smoke-out
+smoke-test.tar
+sf-cli-workspace
+*.md

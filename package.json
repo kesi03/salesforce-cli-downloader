@@ -20,7 +20,9 @@
     "offline:unpack": "tsx src/index.ts offline unpack",
     "offline:setup": "tsx src/index.ts offline setup",
     "offline:configure": "tsx src/index.ts offline configure",
-    "smoke-test": "bash smoke-test.sh"
+    "smoke-test": "bash smoke-test.sh",
+    "docker:build": "docker build -t mockholm/salesforce-cli-downloader .",
+    "docker:command": "docker run --rm -it mockholm/salesforce-cli-downloader"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.5.2",

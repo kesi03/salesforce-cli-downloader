@@ -119,3 +119,31 @@ tasks:
     cmds:
       - pnpm exec tsx src/index.ts offline configure -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
     silent: true
+
+  # ──────────────────────────────────────────────
+  # docker tasks
+  # ──────────────────────────────────────────────
+
+  docker:build:
+    desc: "Build the Docker image with sf CLI installed"
+    cmds:
+      - docker build -t mockholm/salesforce-cli-downloader .
+    silent: true
+
+  docker:command:
+    desc: "Run an sf command in the Docker container (e.g.: task docker:command -- sf version)"
+    cmds:
+      - docker run --rm -it mockholm/salesforce-cli-downloader {{.CLI_ARGS}}
+    silent: true
+
+  docker:test:
+    desc: "Build the image and verify sf works"
+    cmds:
+      - task: docker:build
+      - task: docker:command
+        vars:
+          CLI_ARGS: sf --version
+      - task: docker:command
+        vars:
+          CLI_ARGS: sf plugins --core
+    silent: true
