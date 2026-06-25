@@ -355,6 +355,58 @@ tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
 
 ---
 
+## Docker
+
+The project includes a `Dockerfile` that builds a minimal `node:22-alpine` image with the Salesforce CLI (`sf`) and all core + JIT plugins pre-installed.
+
+### Build
+
+```bash
+pnpm docker:build
+# or
+task docker:build
+```
+
+### Run commands
+
+```bash
+pnpm docker:command sf --version
+# or
+task docker:command -- sf --version
+```
+
+Omit the command to see the default `sf --version` output:
+
+```bash
+pnpm docker:command
+```
+
+### Test
+
+Build and verify the image in one step:
+
+```bash
+task docker:test
+```
+
+This runs the build, then checks `sf --version` and `sf plugins --core` inside the container.
+
+### CI / CD
+
+The `Publish - Docker` workflow (`.github/workflows/publish-docker.yml`) builds, tests, and pushes the image to Docker Hub on every push to `main` and on version tags (`v*`). Published images are tagged with:
+
+| Tag | Example | When |
+|---|---|---|
+| `latest` | `mockholm/salesforce-cli:latest` | On `main` branch pushes |
+| Package version | `mockholm/salesforce-cli:1.0.2` | From `package.json` |
+| Build ID | `mockholm/salesforce-cli:build-12345` | GitHub Actions `run_id` |
+| Git tag | `mockholm/salesforce-cli:v1.0.0` | On `v*` tags |
+| Branch | `mockholm/salesforce-cli:main` | On `main` branch pushes |
+
+The `DOCKER_USERNAME` and `DOCKER_PASSWORD` secrets must be configured in the GitHub repository for publishing to Docker Hub.
+
+---
+
 ## Plugin inventory
 
 | Category | Count | Source |
