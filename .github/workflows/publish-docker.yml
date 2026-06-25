@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE_NAME: salesforce-cli-downloader
+  IMAGE_NAME: salesforce-cli
 
 jobs:
   docker:
