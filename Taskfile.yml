@@ -127,13 +127,13 @@ tasks:
   docker:build:
     desc: "Build the Docker image with sf CLI installed"
     cmds:
-      - docker build -t mockholm/salesforce-cli-downloader .
+      - docker build -t mockholm/salesforce-cli .
     silent: true
 
   docker:command:
     desc: "Run an sf command in the Docker container (e.g.: task docker:command -- sf version)"
     cmds:
-      - docker run --rm -it mockholm/salesforce-cli-downloader {{.CLI_ARGS}}
+      - docker run --rm -it mockholm/salesforce-cli {{.CLI_ARGS}}
     silent: true
 
   docker:test:
