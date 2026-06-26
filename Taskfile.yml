@@ -120,6 +120,12 @@ tasks:
       - pnpm exec tsx src/index.ts offline configure -c {{.PNPM_CATEGORY}} -s {{.OFFLINE_CACHE_DIR}}
     silent: true
 
+  serve:
+    desc: "Start the sf API server"
+    cmds:
+      - pnpm exec tsx src/index.ts serve --port {{.PORT | default 3000}}
+    silent: true
+
   # ──────────────────────────────────────────────
   # docker tasks
   # ──────────────────────────────────────────────
@@ -134,6 +140,12 @@ tasks:
     desc: "Run an sf command in the Docker container (e.g.: task docker:command -- sf version)"
     cmds:
       - docker run --rm -it mockholm/salesforce-cli {{.CLI_ARGS}}
+    silent: true
+
+  docker:serve:
+    desc: "Start the sf API server in Docker on port 3000"
+    cmds:
+      - docker run --rm -p {{.PORT | default 3000}}:3000 mockholm/salesforce-cli pnpm exec tsx src/index.ts serve --port 3000
     silent: true
 
   docker:test:

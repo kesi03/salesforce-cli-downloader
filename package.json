@@ -20,9 +20,11 @@
     "offline:unpack": "tsx src/index.ts offline unpack",
     "offline:setup": "tsx src/index.ts offline setup",
     "offline:configure": "tsx src/index.ts offline configure",
+    "serve": "tsx src/index.ts serve",
     "smoke-test": "bash smoke-test.sh",
     "docker:build": "docker build -t mockholm/salesforce-cli .",
-    "docker:command": "docker run --rm -it mockholm/salesforce-cli"
+    "docker:command": "docker run --rm -it mockholm/salesforce-cli",
+    "docker:serve": "docker run --rm -p 3000:3000 mockholm/salesforce-cli pnpm exec tsx src/index.ts serve"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.5.2",

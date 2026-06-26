@@ -355,6 +355,64 @@ tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
 
 ---
 
+---
+
+### `serve`
+
+Start an HTTP API server that wraps the `sf` CLI. Each request runs `sf` as a child process and returns the result as JSON.
+
+```bash
+# Start on default port 3000
+pnpm serve
+
+# Custom port and sf binary path
+tsx src/index.ts serve --port 4000 --sf-path /opt/sf-cli/node_modules/.bin/sf
+```
+
+#### Endpoints
+
+**`POST /api/sf`**
+```bash
+curl -X POST http://localhost:3000/api/sf \
+  -H "Content-Type: application/json" \
+  -d '{"args": ["org", "list", "--json"]}'
+```
+
+Response (200):
+```json
+{
+  "stdout": "[{\"attributes\":...}]",
+  "stderr": "",
+  "exitCode": 0
+}
+```
+
+On failure (422):
+```json
+{
+  "stdout": "",
+  "stderr": "ERROR:...",
+  "exitCode": 1
+}
+```
+
+**`GET /health`**
+```bash
+curl http://localhost:3000/health
+# {"status":"ok"}
+```
+
+#### Run via Docker
+
+```bash
+# Start the API server on port 3000
+pnpm docker:serve
+task docker:serve
+task docker:serve PORT=4000
+```
+
+---
+
 ## Docker
 
 The project includes a `Dockerfile` that builds a minimal `node:22-alpine` image with the Salesforce CLI (`sf`) and all core + JIT plugins pre-installed.
