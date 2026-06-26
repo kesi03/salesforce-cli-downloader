@@ -355,18 +355,23 @@ tsx src/index.ts offline setup -d ./pnpm-bundle -s ./offline-cache
 
 ---
 
----
-
 ### `serve`
 
 Start an HTTP API server that wraps the `sf` CLI. Each request runs `sf` as a child process and returns the result as JSON.
 
+The server auto-detects the `sf` binary from common install locations
+(`./sf-install/node_modules/.bin/sf`, `./pnpm-bundle/node_modules/.bin/sf`,
+`/opt/sf-cli/node_modules/.bin/sf`), falling back to `sf` on `PATH`.
+
 ```bash
-# Start on default port 3000
+# Start on default port 3000 (auto-detects sf binary)
 pnpm serve
 
-# Custom port and sf binary path
-tsx src/index.ts serve --port 4000 --sf-path /opt/sf-cli/node_modules/.bin/sf
+# Custom port
+tsx src/index.ts serve --port 4000
+
+# Explicit sf binary path
+tsx src/index.ts serve --sf-path /opt/sf-cli/node_modules/.bin/sf
 ```
 
 #### Endpoints
