@@ -1,5 +1,7 @@
 import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { createServer, type RequestListener } from 'node:http';
+import { join } from 'node:path';
 import type { Arguments, CommandBuilder } from 'yargs';
 
 interface ServeArgs {
@@ -12,6 +14,21 @@ interface ExecResult {
   stderr: string;
   exitCode: number;
   error?: string;
+}
+
+function resolveSfPath(sfPath: string): string {
+  if (sfPath !== 'sf') return sfPath;
+  const candidates = [
+    './sf-install/node_modules/.bin/sf',
+    './pnpm-bundle/node_modules/.bin/sf',
+    '/opt/sf-cli/node_modules/.bin/sf',
+  ];
+  for (const p of candidates) {
+    if (existsSync(p)) {
+      return p;
+    }
+  }
+  return 'sf';
 }
 
 function runSf(args: string[], sfPath: string): ExecResult {
@@ -67,7 +84,8 @@ export const builder: CommandBuilder = (yargs) =>
     });
 
 export const handler = async (argv: Arguments & ServeArgs): Promise<void> => {
-  const { port, sfPath } = argv;
+  const { port } = argv;
+  const sfPath = resolveSfPath(argv.sfPath);
 
   const listener: RequestListener = async (req, res) => {
     if (req.method === 'GET' && req.url === '/health') {
